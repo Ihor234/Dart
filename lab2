@@ -1,0 +1,107 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  List students = [];
+
+  students.add(new SchoolStudent("Петренко Іван", 15, "9-Б", "Школа №7"));
+  students.add(new SchoolStudent("Сидоренко Анна", 13, "7-А", "Гімназія №2"));
+  students.add(new UniversityStudent("Коваленко Марія", 20, "КНУ", "Програмна інженерія"));
+  students.add(new UniversityStudent("Татарин Ігор", 20, "НЛТУ", "Компютерні науки"));
+
+  print("=== Дані школярів ===");
+  for (var s in students) {
+    if (s is SchoolStudent) {
+      print(s.toString());
+    }
+  }
+
+  print("\n=== Дані студентів ===");
+  for (var s in students) {
+    if (s is UniversityStudent) {
+      print(s.toString());
+    }
+  }
+}
+
+// Абстрактний клас Учень
+abstract class Pupil {
+  String fullName;
+  int age;
+
+  Pupil(this.fullName, this.age);
+
+  String getFullName() => fullName;
+  int getAge() => age;
+
+  void setFullName(String name) {
+    fullName = name;
+  }
+
+  void setAge(int a) {
+    age = a;
+  }
+
+  // Абстрактні методи
+  String getInstitution();
+  String getLevel();
+
+  @override
+  String toString() {
+    return "Учень{ПІБ=$fullName, Вік=$age, Рівень=${getLevel()}, Заклад=${getInstitution()}}";
+  }
+}
+
+// Підклас Школяр
+class SchoolStudent extends Pupil {
+  String className;
+  String schoolName;
+
+  SchoolStudent(String fullName, int age, this.className, this.schoolName)
+      : super(fullName, age);
+
+  @override
+  String getInstitution() => schoolName;
+
+  @override
+  String getLevel() => "Школяр";
+
+  @override
+  String toString() {
+    return "Школяр{ПІБ=$fullName, Вік=$age, Клас=$className, Школа=$schoolName}";
+  }
+}
+
+// Підклас Студент
+class UniversityStudent extends Pupil {
+  String university;
+  String specialty;
+
+  UniversityStudent(String fullName, int age, this.university, this.specialty)
+      : super(fullName, age);
+
+  @override
+  String getInstitution() => university;
+
+  @override
+  String getLevel() => "Студент";
+
+  @override
+  String toString() {
+    return "Студент{ПІБ=$fullName, Вік=$age, Університет=$university, Спеціальність=$specialty}";
+  }
+}
+
+
+
+
+
+
+
+
+=== Дані школярів ===
+Школяр{ПІБ=Петренко Іван, Вік=15, Клас=9-Б, Школа=Школа №7}
+Школяр{ПІБ=Сидоренко Анна, Вік=13, Клас=7-А, Школа=Гімназія №2}
+
+=== Дані студентів ===
+Студент{ПІБ=Коваленко Марія, Вік=20, Університет=КНУ, Спеціальність=Програмна інженерія}
+Студент{ПІБ=Татарин Ігор, Вік=20, Університет=НЛТУ, Спеціальність=Компютерні науки}
