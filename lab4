@@ -1,0 +1,101 @@
+class Lecture {
+  String _date;
+  String _topic;
+  int _studentCount;
+
+  Lecture(this._date, this._topic, this._studentCount);
+
+  String get date => _date;
+  String get topic => _topic;
+  int get studentCount => _studentCount;
+
+  set date(String value) => _date = value;
+  set topic(String value) => _topic = value;
+  set studentCount(int value) => _studentCount = value;
+
+  @override
+  String toString() {
+    return 'Лекція: "$_topic" ($_date), кількість студентів: $_studentCount';
+  }
+}
+
+// 1️⃣ Generic-клас для зберігання елементів
+class Container<T> {
+  List<T> items = [];
+
+  void addItem(T item) => items.add(item);
+
+  // 2️⃣ Generic-метод для пошуку мінімального елемента за ключем
+  T? findMinBy<R extends Comparable>(R Function(T) selector) {
+    if (items.isEmpty) return null;
+    items.sort((a, b) => selector(a).compareTo(selector(b)));
+    return items.first;
+  }
+
+  // 3️⃣ Generic-метод для фільтрації елементів за умовою
+  List<T> filter(bool Function(T) predicate) {
+    return items.where(predicate).toList();
+  }
+}
+
+class Course {
+  String _courseName;
+  String _teacherSurname;
+  Container<Lecture> lectures = Container<Lecture>();
+
+  Course(this._courseName, this._teacherSurname);
+
+  String get courseName => _courseName;
+  String get teacherSurname => _teacherSurname;
+
+  set courseName(String value) => _courseName = value;
+  set teacherSurname(String value) => _teacherSurname = value;
+
+  void addLecture(Lecture lecture) {
+    lectures.addItem(lecture);
+  }
+
+  Lecture? findMinStudentsLecture() {
+    return lectures.findMinBy((lecture) => lecture.studentCount);
+  }
+
+  List<String> findTopicsWithWord(String word) {
+    return lectures
+        .filter((lecture) =>
+            lecture.topic.toLowerCase().contains(word.toLowerCase()))
+        .map((lecture) => lecture.topic)
+        .toList();
+  }
+
+  String getLastLetterOfSurname() {
+    return _teacherSurname.isNotEmpty
+        ? _teacherSurname[_teacherSurname.length - 1]
+        : '';
+  }
+}
+
+void main() {
+  Course course = Course("Об'єктно-орієнтоване програмування", "Петренко");
+
+  course.addLecture(Lecture("2025-10-01", "Вступ до Dart", 35));
+  course.addLecture(Lecture("2025-10-05", "Класи та об'єкти у Dart", 28));
+  course.addLecture(Lecture("2025-10-10", "Списки та колекції", 22));
+  course.addLecture(Lecture("2025-10-12", "Обробка помилок у Dart", 30));
+
+  // Лекція з мінімальною кількістю студентів
+  Lecture? minLecture = course.findMinStudentsLecture();
+  print("Лекція з мінімальною кількістю студентів:");
+  print(minLecture);
+
+  // Список тем з певним словом
+  String searchWord = "Dart";
+  List<String> foundTopics = course.findTopicsWithWord(searchWord);
+  print("\nСписок тем, що містять слово '$searchWord':");
+  for (var topic in foundTopics) {
+    print("- $topic");
+  }
+
+  // Остання літера у прізвищі викладача
+  print(
+      "\nОстання літера у прізвищі викладача: ${course.getLastLetterOfSurname()}");
+}
